@@ -120,7 +120,7 @@
 			&:hover {
 				background: rgba(#000, .2);
 			}
-			
+
 		}
 	}
 
@@ -137,7 +137,7 @@
 		display: flex;
 		position: relative;
 		list-style: none;
-		
+
 		&.swiping {
 			@include transition(none, 0, ease-in);
 		}
@@ -182,7 +182,7 @@
 
 	.carousel-status {
 		position: absolute;
-		top: 0;
+		bottom: 10px;
 		right: 0;
 		padding: 5px;
 		font-size: 10px;

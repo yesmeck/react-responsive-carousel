@@ -4,7 +4,7 @@ var outerWidth = require('../dimensions').outerWidth;
 var has3d = require('../has3d')();
 
 module.exports = React.createClass({
-	
+
 	propsTypes: {
 		children: React.PropTypes.element.isRequired,
 		showStatus: React.PropTypes.bool,
@@ -20,10 +20,10 @@ module.exports = React.createClass({
 			showControls: false,
 			selectedItem: 0,
 			// Carousel is the default type. It stands for a group of thumbs.
-			// It also accepts 'slider', which will show a full width item 
+			// It also accepts 'slider', which will show a full width item
 			type: 'carousel'
 		}
-	}, 
+	},
 
 	getInitialState () {
 		return {
@@ -32,11 +32,11 @@ module.exports = React.createClass({
             hasMount: false,
 
 			// Index of the thumb that will appear first.
-			// If you are using type = slider, this has 
+			// If you are using type = slider, this has
 			// the same value of the selected item.
 			firstItem: this.props.selectedItem
 		}
-	}, 
+	},
 
 	statics: {
 		// touchPosition is a temporary var to decide what to do on touchEnd
@@ -44,7 +44,7 @@ module.exports = React.createClass({
 	},
 
 	componentWillMount() {
-		// as the widths are calculated, we need to resize 
+		// as the widths are calculated, we need to resize
 		// the carousel when the window is resized
 		window.addEventListener("resize", this.updateDimensions);
 		// issue #2 - image loading smaller
@@ -67,7 +67,7 @@ module.exports = React.createClass({
 	},
 
 	componentDidMount (nextProps) {
-		// when the component is rendered we need to calculate 
+		// when the component is rendered we need to calculate
 		// the container size to adjust the responsive behaviour
 		this.updateDimensions();
 
@@ -92,21 +92,21 @@ module.exports = React.createClass({
 	calculateSpace (total) {
 		total = total || this.props.children.length;
 		this.isSlider = this.props.type === "slider";
-		
+
 		this.wrapperSize = this.refs.itemsWrapper.clientWidth;
 		this.itemSize = this.isSlider ? this.wrapperSize : outerWidth(this.refs.item0);
-		this.visibleItems = Math.floor(this.wrapperSize / this.itemSize);	
-		
+		this.visibleItems = Math.floor(this.wrapperSize / this.itemSize);
+
 		// exposing variables to other methods on this component
 		this.showArrows = this.visibleItems < total;
-		
+
 		// Index of the last visible element that can be the first of the carousel
 		this.lastPosition = (total - this.visibleItems);
-	}, 
+	},
 
 	getFirstItem (selectedItem) {
 		var firstItem = selectedItem;
-		
+
 		if (selectedItem >= this.lastPosition) {
 			firstItem =  this.lastPosition;
 		}
@@ -123,7 +123,7 @@ module.exports = React.createClass({
 
 		if (typeof handler === 'function') {
 			handler(index, item);
-		}	
+		}
 
 		if (index !== this.state.selectedItem) {
 			this.setState({
@@ -131,20 +131,20 @@ module.exports = React.createClass({
 				firstItem: this.getFirstItem(index)
 			});
 		}
-	}, 
+	},
 
 	triggerOnChange (item) {
 		var handler = this.props.onChange;
 
 		if (typeof handler === 'function') {
 			handler(item);
-		}	
-	}, 
+		}
+	},
 
 	// touch start
 	onSwipeStart (e) {
 		this.setState({
-			// saving the initial touch 
+			// saving the initial touch
 			touchStart: e.touches[0].pageX,
 			// setting the swiping state
 			swiping: true
@@ -160,10 +160,10 @@ module.exports = React.createClass({
         var lastLeftBoundry;
 
         if (this.isSlider) {
-			currentPosition = - this.state.firstItem * 100;	
+			currentPosition = - this.state.firstItem * 100;
 			lastLeftBoundry = - (this.props.children.length - 1) * 100;
 		} else {
-			currentPosition = - this.state.firstItem * this.itemSize;	
+			currentPosition = - this.state.firstItem * this.itemSize;
 			lastLeftBoundry = - this.visibleItems * this.itemSize;
 		}
 
@@ -171,7 +171,7 @@ module.exports = React.createClass({
         if (currentPosition === leftBoundry && delta > 0) {
             delta = 0;
         }
-        
+
         //if the last image meets the left boundry, prevent user from swiping right
         if (currentPosition === lastLeftBoundry && delta < 0) {
             delta = 0;
@@ -209,9 +209,9 @@ module.exports = React.createClass({
 			touchStart: null,
 			// finish the swiping state
 			swiping: false
-		}, 
+		},
 			// this function is the callback of setState because we need to wait for the
-			// state to be setted, so the swiping class will be removed and the 
+			// state to be setted, so the swiping class will be removed and the
 			// transition to the next slide will be smooth
 			function () {
 				// number of positions to advance;
@@ -225,8 +225,8 @@ module.exports = React.createClass({
                     */
                 } else {
                 	// if it's a slider, positions is 1
-					positions = !this.isSlider ? Math.abs(Math.round(this.touchPosition / this.itemSize)) : 1;                	
-                } 
+					positions = !this.isSlider ? Math.abs(Math.round(this.touchPosition / this.itemSize)) : 1;
+                }
 
                 if (this.touchPosition < 0) {
                     // less than 0 means that it's going left
@@ -235,9 +235,9 @@ module.exports = React.createClass({
                     this.slideRight(positions);
                 }
 				// discard the position
-				this.touchPosition = null;	
+				this.touchPosition = null;
 			}.bind(this)
-		);	
+		);
 	},
 
 	slideRight (positions){
@@ -253,7 +253,7 @@ module.exports = React.createClass({
 		position = position < 0 ? 0 : position;
 		// position can't be higher than last postion
 		position = position >= this.lastPosition ? this.lastPosition : position;
-		
+
 		this.selectItem({
 			firstItem: this.getFirstItem(position),
 			// if it's not a slider, we don't need to set position here
@@ -281,7 +281,7 @@ module.exports = React.createClass({
 		return this.props.children.map((item, index) => {
             var hasMount = this.state.hasMount;
 			var itemClass = klass.ITEM(this.isSlider, index, this.state.selectedItem, hasMount);
-			
+
 			return (
 				<li key={index} ref={"item" + index} className={itemClass}
 					onClick={ this.handleClickItem.bind(this, index, item) }>
@@ -289,14 +289,14 @@ module.exports = React.createClass({
 				</li>
 			);
 		});
-					
+
 	},
 
 	renderControls () {
 		if (!this.props.showControls) {
 			return null
 		}
-		
+
 		return (
 			<ul className="control-dots">
 				{this.props.children.map( (item, index) => {
@@ -310,15 +310,15 @@ module.exports = React.createClass({
 		if (!this.props.showStatus) {
 			return null
 		}
-		return <p className="carousel-status">{this.state.selectedItem + 1} of {this.props.children.length}</p>;
-	}, 
+    return <p className="carousel-status">{this.state.selectedItem + 1}/{this.props.children.length}</p>;
+	},
 
 	render () {
 		if (this.props.children.length === 0) {
 			return null;
 		}
 
-		// show left arrow? 
+		// show left arrow?
 		var hasPrev = this.showArrows && this.state.firstItem > 0;
 		// show right arrow
 		var hasNext = this.showArrows && this.state.firstItem < this.lastPosition;
@@ -328,9 +328,9 @@ module.exports = React.createClass({
 		var currentPosition;
 
 		if (this.isSlider) {
-			currentPosition = - this.state.firstItem * 100 + '%';	
+			currentPosition = - this.state.firstItem * 100 + '%';
 		} else {
-			currentPosition = - this.state.firstItem * this.itemSize + 'px';	
+			currentPosition = - this.state.firstItem * this.itemSize + 'px';
 		}
 
 		// if 3d is available, let's take advantage of the performance of transform
@@ -343,29 +343,29 @@ module.exports = React.createClass({
 			      'transform': transformProp,
 			    'msTransform': transformProp
 		}
-		
+
 		return (
 			<div className={klass.CAROUSEL(this.isSlider)}>
 				<button className={klass.ARROW_LEFT(!hasPrev)} onClick={this.slideRight} />
-				
+
 				<div className={klass.WRAPPER(this.isSlider)} ref="itemsWrapper">
-					<ul className={klass.SLIDER(this.isSlider, this.state.swiping)} 
+					<ul className={klass.SLIDER(this.isSlider, this.state.swiping)}
 						onTouchMove={this.onSwipeMove}
 						onTouchStart={this.onSwipeStart}
 						onTouchEnd={this.onSwipeEnd}
-						style={itemListStyles} 
+						style={itemListStyles}
 						ref="itemList">
 						{ this.renderItems() }
 					</ul>
 				</div>
 
 				<button className={klass.ARROW_RIGHT(!hasNext)} onClick={this.slideLeft} />
-				
+
 				{ this.renderControls() }
 				{ this.renderStatus() }
 			</div>
 		);
-		
+
 	}
 });
 
